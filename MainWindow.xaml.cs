@@ -1,0 +1,59 @@
+﻿using System;
+using System.Linq;
+using System.Windows;
+using Ereigniskalender.Models;
+
+namespace Ereigniskalender
+{
+    public partial class MainWindow : Window
+    {
+        public MainWindow()
+        {
+            InitializeComponent();
+            LoadUpcoming();
+        }
+
+        private void LoadUpcoming()
+        {
+            var all = CsvService.LoadAll();
+            var today = DateTime.Today;
+            var cutoff = today.AddMonths(3);
+
+            var upcoming = all
+                .Select(e =>
+                {
+                    // nächstes Geburtstagsdatum berechnen
+                    var next = e.Birthday.WithYear(today.Year);
+                    if (next <= today)
+                        next = next.AddYears(1);
+
+                    return new
+                    {
+                        e.Name,
+                        Birthday = next,
+                        Age = next.Year - e.Birthday.Year,  // Alter
+                        DaysUntil = (next - today).Days
+                    };
+                })
+                .Where(x => x.DaysUntil <= (cutoff - today).Days)
+                .OrderBy(x => x.DaysUntil)
+                .ToList();
+
+            UpcomingGrid.ItemsSource = upcoming;
+        }
+
+
+        private void OnShowAll_Click(object sender, RoutedEventArgs e)
+        {
+            var dlg = new ManageWindow();
+            if (dlg.ShowDialog() == true)
+                LoadUpcoming();
+        }
+    }
+
+    public static class DateExtensions
+    {
+        public static DateTime WithYear(this DateTime dt, int year) =>
+            new DateTime(year, dt.Month, dt.Day);
+    }
+}

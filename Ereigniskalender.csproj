@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+	  <!-- WPF-App-Icon für den EXE-Wrapper -->
+	<ApplicationIcon>Assets\app.ico</ApplicationIcon>
+	<!-- Icon für Win32-EXE -->
+	<Win32Icon>Assets\app.ico</Win32Icon>
+  </PropertyGroup>
+
+</Project>
