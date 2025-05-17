@@ -56,10 +56,7 @@ namespace Ereigniskalender
                 "Ereigniskalender: Version 0.5 (Mai 2025)\n" +
                 "Verwalte Geburtstage, Hochzeitstage und andere wichtige Meilensteine.\n\n" +
                 "Entwickler: Manuel Kasser\n" +
-                "MK Computer Services e.U.\n" +
-                "Sonnwendgasse 30/4, 9020 Klagenfurt\n" +
-                "kasser@mk-cs.at\n" +
-                "0463 203311",
+                "kasser88@mk-cs.at\n",
                 "Über Ereigniskalender",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information

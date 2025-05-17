@@ -21,7 +21,7 @@ namespace Ereigniskalender.Models
             }
         }
 
-        /// <summary>
+        /// <summary> 
         /// Tage bis zum nächsten Geburtstag
         /// </summary>
         public int DaysUntil
