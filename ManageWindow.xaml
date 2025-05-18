@@ -25,7 +25,7 @@
               Click="OnMoreFunctions_Click">
                 <Button.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Daten importieren" />
+                        <MenuItem Header="Daten importieren" Click="OnImportData_Click" />
                         <MenuItem Header="Daten exportieren" Click="OnExportData_Click" />
                         <Separator/>
                         <MenuItem Header="App-Verzeichnis öffnen"

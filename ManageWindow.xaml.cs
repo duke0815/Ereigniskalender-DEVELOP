@@ -10,6 +10,7 @@ using System.Windows.Data;
 using Ereigniskalender.Models;
 using System.IO;
 using Microsoft.Win32;
+using System.Globalization;
 
 namespace Ereigniskalender
 {
@@ -103,6 +104,82 @@ namespace Ereigniskalender
                 btn.ContextMenu.PlacementTarget = btn;
                 btn.ContextMenu.Placement = PlacementMode.Bottom;
                 btn.ContextMenu.IsOpen = true;
+            }
+        }
+
+        private void OnImportData_Click(object sender, RoutedEventArgs e)
+        {
+            // Offene Edits übernehmen
+            AllGrid.CommitEdit(DataGridEditingUnit.Cell, true);
+            AllGrid.CommitEdit(DataGridEditingUnit.Row, true);
+
+            var dlg = new OpenFileDialog
+            {
+                Title = "Importiere Ereignisdaten",
+                Filter = "CSV files (*.csv)|*.csv",
+                DefaultExt = ".csv"
+            };
+
+            if (dlg.ShowDialog() != true)
+                return;
+
+            try
+            {
+                var lines = File.ReadAllLines(dlg.FileName)
+                                .Skip(1) // Header überspringen
+                                .Where(l => !string.IsNullOrWhiteSpace(l))
+                                .ToArray();
+
+                int added = 0;
+                foreach (var line in lines)
+                {
+                    var parts = line.Split(',');
+                    if (parts.Length < 2)
+                        continue;
+
+                    var name = parts[0];
+                    if (!DateTime.TryParseExact(parts[1], "yyyy-MM-dd",
+                            CultureInfo.InvariantCulture,
+                            DateTimeStyles.None,
+                            out DateTime bd))
+                        continue;
+
+                    var comment = parts.Length > 2 ? parts[2] : string.Empty;
+
+                    // Einfacher Duplikat-Check: Name + Datum
+                    bool exists = _entries.Any(e2 =>
+                        e2.Name == name &&
+                        e2.Birthday == bd
+                    );
+
+                    if (!exists)
+                    {
+                        _entries.Add(new BirthdayEntry
+                        {
+                            Name = name,
+                            Birthday = bd,
+                            Comment = comment
+                        });
+                        added++;
+                    }
+                }
+
+                AllGrid.Items.Refresh();
+                MessageBox.Show(
+                    $"Import abgeschlossen!\n{added} neue Einträge hinzugefügt.",
+                    "Import erfolgreich",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information
+                );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Import fehlgeschlagen:\n{ex.Message}",
+                    "Fehler",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
             }
         }
 
