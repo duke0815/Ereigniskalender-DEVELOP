@@ -30,6 +30,8 @@
                         <Separator/>
                         <MenuItem Header="App-Verzeichnis öffnen"
                       Click="OnOpenAppDirectory_Click"/>
+                        <Separator/>
+                        <MenuItem Header="App-Info" Click="OnAppInfo_Click" />
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>
