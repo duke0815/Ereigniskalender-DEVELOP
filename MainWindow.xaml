@@ -7,7 +7,8 @@
             Click="OnShowAll_Click" Margin="0,10,0,0"/>
         <DataGrid x:Name="UpcomingGrid"
           IsReadOnly="True"
-          AutoGenerateColumns="False">
+          AutoGenerateColumns="False"
+          LoadingRow="UpcomingGrid_LoadingRow">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name"
                         Binding="{Binding Name}"

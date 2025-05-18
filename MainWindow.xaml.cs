@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 using Ereigniskalender.Models;
 
 namespace Ereigniskalender
@@ -40,6 +42,23 @@ namespace Ereigniskalender
                 .ToList();
 
             UpcomingGrid.ItemsSource = upcoming;
+        }
+
+        private void UpcomingGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        {
+            // Item kann dein anonymes Objekt oder eine Klasse mit DaysUntil sein
+            dynamic item = e.Row.Item;
+
+            // Prüfen, ob DaysUntil < 7
+            if (item.DaysUntil < 7)
+            {
+                e.Row.Background = Brushes.LightGoldenrodYellow;
+            }
+            else
+            {
+                // Standard-Hintergrund zurücksetzen, z.B. Weiß
+                e.Row.Background = Brushes.White;
+            }
         }
 
 
