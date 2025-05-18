@@ -8,6 +8,8 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using Ereigniskalender.Models;
+using System.IO;
+using Microsoft.Win32;
 
 namespace Ereigniskalender
 {
@@ -39,6 +41,48 @@ namespace Ereigniskalender
                 Birthday = DateTime.Today,
                 Comment = string.Empty
             });
+        }
+        private void OnExportData_Click(object sender, RoutedEventArgs e)
+        {
+            // Erst alle offenen Edits committen, damit wir aktuellen Stand exportieren
+            AllGrid.CommitEdit(DataGridEditingUnit.Cell, true);
+            AllGrid.CommitEdit(DataGridEditingUnit.Row, true);
+
+            // SaveFileDialog öffnen
+            var dlg = new SaveFileDialog
+            {
+                Filter = "CSV files (*.csv)|*.csv",
+                FileName = "birthdays_export.csv",
+                DefaultExt = ".csv"
+            };
+
+            if (dlg.ShowDialog() == true)
+            {
+                try
+                {
+                    using var writer = new StreamWriter(dlg.FileName);
+                    writer.WriteLine("Name,Birthday,Comment");
+                    foreach (var entry in _entries)
+                    {
+                        // ISO-Format im Export
+                        writer.WriteLine($"{entry.Name},{entry.Birthday:yyyy-MM-dd},{entry.Comment}");
+                    }
+
+                    MessageBox.Show(
+                        $"Data successfully exported to:\n{dlg.FileName}",
+                        "Export successful",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        $"Export failed:\n{ex.Message}",
+                        "Error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
+            }
         }
 
         private void OnSave_Click(object sender, RoutedEventArgs e)

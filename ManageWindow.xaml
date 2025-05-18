@@ -26,7 +26,7 @@
                 <Button.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Daten importieren" />
-                        <MenuItem Header="Daten exportieren" />
+                        <MenuItem Header="Daten exportieren" Click="OnExportData_Click" />
                         <Separator/>
                         <MenuItem Header="App-Verzeichnis öffnen"
                       Click="OnOpenAppDirectory_Click"/>
