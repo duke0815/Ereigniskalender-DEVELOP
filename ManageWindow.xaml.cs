@@ -264,7 +264,7 @@ namespace Ereigniskalender
         private void OnAppInfo_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show(
-                "EventReminder: Version 0.5 (Mai 2025)\n" +
+                "EventReminder: Version 0.6 (Mai 2025)\n" +
                 "Manage birthdays, anniversaries, and other yearly recurring events\n\n" +
                 "Entwickler: Manuel Kasser\n" +
                 "kasser88@outlook.com",
