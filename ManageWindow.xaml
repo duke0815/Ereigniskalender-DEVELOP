@@ -4,29 +4,36 @@
         Title="Einträge verwalten" Height="500" Width="750">
     <DockPanel Margin="10">
 
-        <!-- Obere Button-Leiste mit Info-Button -->
+        <!-- Obere Button-Leiste -->
         <StackPanel Orientation="Horizontal"
                 DockPanel.Dock="Top"
                 Margin="0,0,0,10">
 
-            <!-- Info-Button -->
-            <Button x:Name="InfoButton"
-              Content="❓"
-              Width="30"
-              Height="30"
-              Margin="0,0,10,0"
-              ToolTip="Infos zum Entwickler"
-              Click="OnInfo_Click"/>
-
-            <!-- Neuer Eintrag -->
             <Button Content="Neu"
               Click="OnNew_Click"
               Width="75"/>
-            <!-- Speichern -->
             <Button Content="Speichern"
               Click="OnSave_Click"
               Width="75"
               Margin="10,0,0,0"/>
+
+            <!-- Weitere Funktionen per Linksklick -->
+            <Button x:Name="MoreFunctionsButton"
+              Content="Weitere Funktionen"
+              Width="140"
+              Margin="10,0,0,0"
+              Click="OnMoreFunctions_Click">
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Daten importieren" />
+                        <MenuItem Header="Daten exportieren" />
+                        <Separator/>
+                        <MenuItem Header="App-Verzeichnis öffnen"
+                      Click="OnOpenAppDirectory_Click"/>
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+
         </StackPanel>
 
         <!-- DataGrid mit allen Spalten -->
@@ -35,14 +42,12 @@
               CanUserAddRows="False"
               CanUserSortColumns="True">
             <DataGrid.Columns>
-
                 <!-- Name -->
                 <DataGridTextColumn Header="Name"
                             Binding="{Binding Name, Mode=TwoWay}"
                             SortMemberPath="Name"
                             Width="150"/>
-
-                <!-- Geburtstag (Lesen + Edit) -->
+                <!-- Geburtstag -->
                 <DataGridTemplateColumn Header="Geburtstag"
                                 SortMemberPath="Birthday"
                                 Width="100">
@@ -59,7 +64,6 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-
                 <!-- Aktuelles Alter -->
                 <DataGridTemplateColumn Header="Alter"
                                 SortMemberPath="AgeCurrent"
@@ -71,8 +75,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-
-                <!-- Tage bis zum nächsten Geburtstag -->
+                <!-- Tage übrig -->
                 <DataGridTemplateColumn Header="Tage übrig"
                                 SortMemberPath="DaysUntil"
                                 Width="120"
@@ -83,7 +86,6 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-
                 <!-- Kommentar -->
                 <DataGridTextColumn Header="Kommentar"
                             Binding="{Binding Comment, Mode=TwoWay}"

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using Ereigniskalender.Models;
 
@@ -41,7 +43,7 @@ namespace Ereigniskalender
 
         private void OnSave_Click(object sender, RoutedEventArgs e)
         {
-            // Alle Edits übernehmen
+            // Alle offenen Edits übernehmen
             AllGrid.CommitEdit(DataGridEditingUnit.Cell, true);
             AllGrid.CommitEdit(DataGridEditingUnit.Row, true);
 
@@ -50,18 +52,26 @@ namespace Ereigniskalender
             Close();
         }
 
-        private void OnInfo_Click(object sender, RoutedEventArgs e)
+        private void OnMoreFunctions_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(
-                "Ereigniskalender: Version 0.5 (Mai 2025)\n" +
-                "Verwalte Geburtstage, Hochzeitstage und andere wichtige Meilensteine.\n\n" +
-                "Entwickler: Manuel Kasser\n" +
-                "kasser88@mk-cs.at\n",
-                "Über Ereigniskalender",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information
-            );
+            if (sender is Button btn && btn.ContextMenu != null)
+            {
+                btn.ContextMenu.PlacementTarget = btn;
+                btn.ContextMenu.Placement = PlacementMode.Bottom;
+                btn.ContextMenu.IsOpen = true;
+            }
+        }
 
+        private void OnOpenAppDirectory_Click(object sender, RoutedEventArgs e)
+        {
+            // öffnet im Explorer das Verzeichnis, in dem die EXE liegt
+            var folder = AppDomain.CurrentDomain.BaseDirectory;
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = folder,
+                UseShellExecute = true,
+                Verb = "open"
+            });
         }
     }
 }
