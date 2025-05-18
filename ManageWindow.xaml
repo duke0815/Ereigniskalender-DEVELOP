@@ -36,6 +36,13 @@
                 </Button.ContextMenu>
             </Button>
 
+            <TextBox x:Name="FilterTextBox"
+               Width="200"
+               Margin="20,0,0,0"
+               VerticalContentAlignment="Center"
+               ToolTip="Filter by name or comment"
+               TextChanged="FilterTextBox_TextChanged"/>
+
         </StackPanel>
 
         <!-- DataGrid mit allen Spalten -->

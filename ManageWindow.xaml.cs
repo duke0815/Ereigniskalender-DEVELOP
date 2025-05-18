@@ -17,21 +17,47 @@ namespace Ereigniskalender
     public partial class ManageWindow : Window
     {
         private ObservableCollection<BirthdayEntry> _entries;
+        private ICollectionView _entriesView;
 
         public ManageWindow()
         {
             InitializeComponent();
 
-            // Daten laden und binden
+            // 1) Lade deine Daten
             _entries = new ObservableCollection<BirthdayEntry>(CsvService.LoadAll());
-            AllGrid.ItemsSource = _entries;
 
-            // Standard-Sortierung: Tage übrig aufsteigend
-            var view = CollectionViewSource.GetDefaultView(AllGrid.ItemsSource);
-            view.SortDescriptions.Add(new SortDescription(nameof(BirthdayEntry.DaysUntil), ListSortDirection.Ascending));
-            var daysCol = AllGrid.Columns.FirstOrDefault(c => c.SortMemberPath == nameof(BirthdayEntry.DaysUntil));
+            // 2) Richte eine View mit Filter ein
+            _entriesView = CollectionViewSource.GetDefaultView(_entries);
+            _entriesView.Filter = EntryFilter;
+
+            // 3) Binde die View ans Grid
+            AllGrid.ItemsSource = _entriesView;
+
+            // 4) (optional) Standard-Sortierung
+            _entriesView.SortDescriptions.Add(
+                new SortDescription(nameof(BirthdayEntry.DaysUntil), ListSortDirection.Ascending));
+            var daysCol = AllGrid.Columns
+                                 .FirstOrDefault(c => c.SortMemberPath == nameof(BirthdayEntry.DaysUntil));
             if (daysCol != null)
                 daysCol.SortDirection = ListSortDirection.Ascending;
+        }
+
+        // Filter-Logik: zeigt nur Einträge, die Name oder Kommentar matchen
+        private bool EntryFilter(object obj)
+        {
+            if (obj is not BirthdayEntry entry) return false;
+            var txt = FilterTextBox.Text;
+            if (string.IsNullOrWhiteSpace(txt))
+                return true;
+
+            return entry.Name.Contains(txt, StringComparison.InvariantCultureIgnoreCase)
+                   || entry.Comment.Contains(txt, StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        // Wird bei jeder Änderung im TextBox-Text getriggert
+        private void FilterTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            _entriesView.Refresh();
         }
 
         private void OnNew_Click(object sender, RoutedEventArgs e)
@@ -93,8 +119,13 @@ namespace Ereigniskalender
             AllGrid.CommitEdit(DataGridEditingUnit.Row, true);
 
             CsvService.SaveAll(_entries);
-            DialogResult = true;
-            Close();
+            //DialogResult = true;
+            //Close();
+            _entriesView.Refresh();
+            MessageBox.Show(
+                        $"Speichern erfolgreich!","",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
         }
 
         private void OnMoreFunctions_Click(object sender, RoutedEventArgs e)
