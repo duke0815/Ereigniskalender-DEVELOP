@@ -26,6 +26,10 @@ namespace Ereigniskalender
             // 1) Lade deine Daten
             _entries = new ObservableCollection<BirthdayEntry>(CsvService.LoadAll());
 
+            // <<< Hier alle Flags zurücksetzen >>>
+            foreach (var entry in _entries)
+                entry.IsModified = false;
+
             // 2) Richte eine View mit Filter ein
             _entriesView = CollectionViewSource.GetDefaultView(_entries);
             _entriesView.Filter = EntryFilter;
@@ -112,21 +116,52 @@ namespace Ereigniskalender
             }
         }
 
+        private void OnWindowClosing(object sender, CancelEventArgs e)
+        {
+            // Prüfe, ob es ungespeicherte Änderungen gibt
+            bool hasUnsaved = _entries.Any(entry => entry.IsModified);
+            if (hasUnsaved)
+            {
+                var result = MessageBox.Show(
+                    "Es gibt ungespeicherte Änderungen. Möchtest du wirklich schließen?\n" +
+                    "Alle nicht gespeicherten Änderungen gehen verloren.",
+                    "Ungespeicherte Änderungen",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.No)
+                {
+                    // Abbruch des Schließens
+                    e.Cancel = true;
+                }
+            }
+        }
+
         private void OnSave_Click(object sender, RoutedEventArgs e)
         {
-            // Alle offenen Edits übernehmen
+            // 1. Alle offenen Edits übernehmen
             AllGrid.CommitEdit(DataGridEditingUnit.Cell, true);
             AllGrid.CommitEdit(DataGridEditingUnit.Row, true);
 
+            // 2. In CSV speichern
             CsvService.SaveAll(_entries);
-            //DialogResult = true;
-            //Close();
+
+            // 3. Dirty-Flags zurücksetzen
+            foreach (var entry in _entries)
+                entry.IsModified = false;
+
+            // 4. Grid aktualisieren
             _entriesView.Refresh();
+            AllGrid.Items.Refresh();
+
+            // 5. Feedback an den Nutzer
             MessageBox.Show(
-                        $"Speichern erfolgreich!","",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
+                "Speichern erfolgreich!",
+                "",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
         }
+
 
         private void OnMoreFunctions_Click(object sender, RoutedEventArgs e)
         {

@@ -1,7 +1,8 @@
 ﻿<Window x:Class="Ereigniskalender.ManageWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Einträge verwalten" Height="500" Width="750">
+        Title="Einträge verwalten" Height="500" Width="750"
+        Closing="OnWindowClosing">
     <DockPanel Margin="10">
 
         <!-- Obere Button-Leiste -->
@@ -101,6 +102,16 @@
                             SortMemberPath="Comment"
                             Width="*"/>
             </DataGrid.Columns>
+            <!-- HIER EINSETZEN: Dirty-Flag RowStyle -->
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsModified}" Value="True">
+                            <Setter Property="Background" Value="LightGoldenrodYellow"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
         </DataGrid>
 
     </DockPanel>
