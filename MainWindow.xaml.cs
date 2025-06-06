@@ -7,15 +7,16 @@ using Ereigniskalender.Models;
 
 namespace Ereigniskalender
 {
+
     public partial class MainWindow : Window
     {
+
         public MainWindow()
         {
             InitializeComponent();
             Loaded += async (_, __) => await UpdateService.CheckForUpdatesAsync(this);
             LoadUpcoming();
         }
-
         private void LoadUpcoming()
         {
             var all = CsvService.LoadAll();
@@ -49,9 +50,9 @@ namespace Ereigniskalender
         {
             // Item kann dein anonymes Objekt oder eine Klasse mit DaysUntil sein
             dynamic item = e.Row.Item;
-
-            // Hervorhebung für Ereignisse in den nächsten zwei Tagen
-            if (item.DaysUntil <= 2)
+            
+            // Hervorhebung für Ereignisse von heute
+            if (item.DaysUntil == 0)
             {
                 e.Row.Background = Brushes.LightCoral;
             }
