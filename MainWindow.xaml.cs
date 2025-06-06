@@ -7,14 +7,15 @@ using Ereigniskalender.Models;
 
 namespace Ereigniskalender
 {
+
     public partial class MainWindow : Window
     {
+
         public MainWindow()
         {
             InitializeComponent();
             LoadUpcoming();
         }
-
         private void LoadUpcoming()
         {
             var all = CsvService.LoadAll();
