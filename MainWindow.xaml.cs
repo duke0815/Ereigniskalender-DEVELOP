@@ -49,8 +49,8 @@ namespace Ereigniskalender
             // Item kann dein anonymes Objekt oder eine Klasse mit DaysUntil sein
             dynamic item = e.Row.Item;
 
-            // Hervorhebung für Ereignisse von heute
-            if (item.DaysUntil == 0)
+            // Hervorhebung für Ereignisse in den nächsten zwei Tagen
+            if (item.DaysUntil <= 2)
             {
                 e.Row.Background = Brushes.LightCoral;
             }
