@@ -14,6 +14,7 @@ namespace Ereigniskalender
         public MainWindow()
         {
             InitializeComponent();
+            Loaded += async (_, __) => await UpdateService.CheckForUpdatesAsync(this);
             LoadUpcoming();
         }
         private void LoadUpcoming()
@@ -49,7 +50,7 @@ namespace Ereigniskalender
         {
             // Item kann dein anonymes Objekt oder eine Klasse mit DaysUntil sein
             dynamic item = e.Row.Item;
-
+            
             // Hervorhebung für Ereignisse von heute
             if (item.DaysUntil == 0)
             {
