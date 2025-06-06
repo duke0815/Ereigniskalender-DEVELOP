@@ -12,6 +12,7 @@ namespace Ereigniskalender
         public MainWindow()
         {
             InitializeComponent();
+            Loaded += async (_, __) => await UpdateService.CheckForUpdatesAsync(this);
             LoadUpcoming();
         }
 
@@ -26,7 +27,7 @@ namespace Ereigniskalender
                 {
                     // nächstes Geburtstagsdatum berechnen
                     var next = e.Birthday.WithYear(today.Year);
-                    if (next <= today)
+                    if (next < today)
                         next = next.AddYears(1);
 
                     return new
@@ -49,14 +50,19 @@ namespace Ereigniskalender
             // Item kann dein anonymes Objekt oder eine Klasse mit DaysUntil sein
             dynamic item = e.Row.Item;
 
-            // Prüfen, ob DaysUntil < 7
-            if (item.DaysUntil < 7)
+            // Hervorhebung für Ereignisse in den nächsten zwei Tagen
+            if (item.DaysUntil <= 2)
+            {
+                e.Row.Background = Brushes.LightCoral;
+            }
+            // Ereignisse innerhalb der nächsten Woche
+            else if (item.DaysUntil < 7)
             {
                 e.Row.Background = Brushes.LightGoldenrodYellow;
             }
             else
             {
-                // Standard-Hintergrund zurücksetzen, z.B. Weiß
+                // Standard-Hintergrund zurücksetzen
                 e.Row.Background = Brushes.White;
             }
         }
